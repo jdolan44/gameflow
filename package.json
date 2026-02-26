@@ -1,0 +1,20 @@
+{
+  "name": "gameflow_prototype",
+  "version": "1.0.0",
+  "description": "This is a prototype for GameFlow, a framework for the development of two-player turn-based games.",
+  "homepage": "https://github.com/jdolan44/gameflow_prototype#readme",
+  "bugs": {
+    "url": "https://github.com/jdolan44/gameflow_prototype/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jdolan44/gameflow_prototype.git"
+  },
+  "license": "ISC",
+  "author": "Joseph Dolan",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
