@@ -13,4 +13,5 @@ socket.on("request_move", (status) => {
 
 socket.on("game_over", (status) => {
     console.log(`player ${status} wins!`);
+    socket.disconnect();
 });
