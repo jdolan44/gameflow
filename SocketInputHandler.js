@@ -8,18 +8,15 @@ export class SocketInputHandler extends InputHandler {
         this.io = io;
     }
 
+
     async requestMove(playerId, status) {
         return new Promise((resolve) => {
             // Tell the client to request input
-            this.io.to(playerId).emit('request_move', status);
-
             const socket = this.io.sockets.sockets.get(playerId);
-            if (!socket) return resolve(null); // or handle error
+            if (!socket) return resolve(null);
 
-            // Wait for exactly one move response from this socket
-            socket.once('move', (move) => {
-                console.log("recieved!");
-                resolve(move);
+            socket.emit('request_move', status, (response) => {
+                resolve(response.move);
             });
         });
     }
