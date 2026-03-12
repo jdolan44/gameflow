@@ -5,7 +5,10 @@ const prompt = promptSync();
 const socket = io("http://localhost:3000");
 
 // choose which game to play
-const choice = prompt("Which game would you like to play? (simple/ticTacToe) ");
+let choice = process.argv[0];
+if (!choice) {
+    choice = prompt("Which game would you like to play? (simple/ticTacToe) ");
+}
 if (choice === "ticTacToe") {
     playTicTacToe();
 } else {
