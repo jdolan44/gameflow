@@ -5,7 +5,7 @@ const prompt = promptSync();
 const socket = io("http://localhost:3000");
 
 // choose which game to play
-let choice = process.argv[0];
+let choice = process.argv[2];
 if (!choice) {
     choice = prompt("Which game would you like to play? (simple/ticTacToe) ");
 }
@@ -53,7 +53,13 @@ function playTicTacToe() {
     });
 
     socket.on("game_over", (status, gameState) => {
-        console.log(`game over; player ${status} wins or it's a draw!`);
+        console.log(`game over!`);
+        if (gameState.winner == "draw") {
+            console.log("it's a draw!");
+        }
+        else {
+            console.log(`${gameState.winner} wins!`);
+        }
         if (gameState && gameState.board) renderBoard(gameState.board);
         socket.disconnect();
     });
