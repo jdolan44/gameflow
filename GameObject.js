@@ -1,4 +1,4 @@
-import { InputHandler } from "./InputHandler.js";
+//potential future change: use proxy for game state so that pass by value isn't an issue
 export class GameObject {
 
     gameState; //object representing the game state.

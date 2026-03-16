@@ -13,17 +13,15 @@ export class TicTacToe extends GameObject {
             winner: null,        // will hold winning mark or 'draw'
         };
     }
-    isValidTurn(move, gameState) { //moves should have properties x and y
-        const b = gameState.board;
-        return move &&
-            move.x >= 0 && move.x <= 2 &&
-            move.y >= 0 && move.y <= 2 &&
-            b[move.x][move.y] == null;
+    isValidTurn({ x, y }, { board }) { //moves should have properties x and y
+        return x >= 0 && x <= 2 &&
+            y >= 0 && y <= 2 &&
+            board[x][y] == null;
     }
 
-    takeTurn(move, gameState) {
-        const mark = gameState.marks[this.whoseMove - 1];
-        gameState.board[move.x][move.y] = mark;
+    takeTurn({ x, y }, { marks, board }) {
+        const mark = marks[this.whoseMove - 1];
+        board[x][y] = mark;
     }
 
     checkWinner(gameState) {
