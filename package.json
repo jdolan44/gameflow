@@ -15,7 +15,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "server": "node gameflow-server.js",
+    "client": "node console-client.js"
   },
   "dependencies": {
     "prompt-sync": "^4.2.0",
