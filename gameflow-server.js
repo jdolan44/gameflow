@@ -4,7 +4,11 @@ import { Session } from "./Session.js";
 import { SocketInputHandler } from "./SocketInputHandler.js";
 import { Server } from "socket.io";
 
-const io = new Server(3000);
+const io = new Server(3000, {
+    cors: {
+        origin: "*"
+    }
+});
 console.log("server started!");
 
 // store one waiting socket per game type, could be extended to queues
