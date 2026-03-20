@@ -18,11 +18,12 @@ if (choice === "ticTacToe") {
 function playSimpleGame() {
     client.joinGame("simple");
 
-    client.onTurn((status, gameState) => {
+    client.onMyTurn((status, gameState) => {
         console.log(`it's player ${status}'s turn.`);
         // ignoring gameState for simple game
         let move = prompt("what is your move? ");
-        return move;
+        if (move === undefined) { console.log("error i was xpecting!") }
+        client.takeTurn(move);
     });
 
     client.onGameOver((status) => {
@@ -41,13 +42,13 @@ function playTicTacToe() {
         }
     };
 
-    client.onTurn((status, gameState) => {
+    client.onMyTurn((status, gameState) => {
         console.log(`it's player ${status}'s turn.`);
         if (gameState && gameState.board) renderBoard(gameState.board);
         const raw = prompt("enter coordinates as x,y (0-2): ");
         const [xStr, yStr] = raw.split(",");
         const move = { x: parseInt(xStr, 10), y: parseInt(yStr, 10) };
-        return move;
+        client.takeTurn(move);
     });
 
     client.onGameOver((status, gameState) => {

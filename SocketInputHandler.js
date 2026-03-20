@@ -8,12 +8,11 @@ export class SocketInputHandler extends InputHandler {
         this.socket = socket;
     }
 
-
     async requestMove(status, gameState) {
+        this.socket.emit('request_move', status, gameState);
         return new Promise((resolve) => {
-            // send current state along so client can render it
-            this.socket.emit('request_move', status, gameState, (response) => {
-                resolve(response.move);
+            this.socket.on("take_turn", (move) => {
+                resolve(move);
             });
         });
     }

@@ -38,7 +38,7 @@ export class GameObject {
         let move = null;
         do {
             move = await requestMove(this.whoseMove, this.gameState);
-            console.log(move); //for debugging
+            console.log("TURN: " + move); //for debugging
         } while (!this.isValidTurn(move, this.gameState));
         return move;
     }
