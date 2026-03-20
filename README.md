@@ -10,3 +10,17 @@ The goal of this prototype is to define a simple contract that multiple two-play
 - the `GameObject` class also manages running the state of the game. I plan to move this back into the `Session` object.
 - the core server is coupled directly to Socket.IO. I may change this to a "transport layer" object that deals with everything Socket.IO.
 - some issues with connecting GameFlow to a web client.
+
+### Timeline
+- rest of March: 
+    - continue work on the prototype. 
+    - Point out as many issues as possible, and brianstorm how they can be fixed in the final version.
+    - experiment with a web client.
+- April:
+    - begin design/implementation of the final system.
+    - integrate GameFlow as smoothly as possible with web clients.
+    - begin development of the demo application.
+- May:
+    - finalize demo application.
+    - Host final application.
+    - write system documentation, user guide, etc.
