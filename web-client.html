@@ -6,19 +6,42 @@
 </head>
 
 <body>
+    <div>
+        <button id="join">Join Game</button>
+    </div>
+    <input type="text" id="turn_input" />
+    <button id="submit" disabled>Submit</button>
+
     <script src="http://localhost:3000/socket.io/socket.io.js"></script>
     <script type="module">
         import { Client } from "http://localhost:3000/gameflow_client.js";
+        const client = new Client("http://localhost:3000");
+        const submitButton = document.getElementById("submit");
+        const joinButton = document.getElementById("join");
 
-        let client = new Client("http://localhost:3000");
-        client.joinGame("simple");
+        function joinGame() {
+            client.joinGame("simple");
+            joinButton.setAttribute("disabled", "true");
+        }
+        joinButton.addEventListener("click", joinGame);
+
         client.onMyTurn((status, gameState) => {
-            let move = window.prompt("what is your move?");
-            client.takeTurn(move);
+            submitButton.removeAttribute("disabled");
         });
+
+        function makeMove() {
+            let move = document.getElementById("turn_input").value;
+            client.takeTurn(move);
+            submitButton.setAttribute("disabled", "true");
+            document.getElementById("turn_input").value = "";
+        }
+        submitButton.addEventListener("click", makeMove);
+
         client.onGameOver((status) => {
             window.alert("game over! player " + status + " wins!");
+            joinButton.removeAttribute("disabled");
         });
+
     </script>
 </body>
 

@@ -2,7 +2,7 @@
 //issue: the console client needs the above line. The web client can't have it!
 export class Client {
     //remove taking an io as input later
-    constructor(host, io) { //takes location of host server
+    constructor(host) { //takes location of host server
         this.socket = io(host);
     }
     /**
