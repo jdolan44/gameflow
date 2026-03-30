@@ -20,8 +20,13 @@ const io = new Server(server, {
 });
 console.log("START");
 
+//TODO: change a lot of these to maps?
+
 // store one waiting socket per game type, could be extended to queues
 const waitingPlayers = {};
+
+//dict of all game sessions
+const sessions = {};
 
 // registry so we can create new game instances by name
 const gameRegistry = {
@@ -50,12 +55,16 @@ io.on("connection", (socket) => {
             const game = createGame(gameType);
             const players = [opponent, socket];
             const session = new Session(players, game, io);
-            session.runGame();
+            sessions[session.getId()] = session;
         } else {
             waitingPlayers[gameType] = socket;
-            socket.emit("join_status", "queued"); //notify client they have been queued
+            socket.emit("join_status", { status: "queued" }); //notify client they have been queued
             console.log(`QUEUED: ${socket.id}, ${gameType}`);
         }
+    });
+
+    socket.on("game_message", (msg) => {
+        sessions[msg.sessionID].handleMessage(socket, msg);
     });
 
     socket.on("disconnect", () => {

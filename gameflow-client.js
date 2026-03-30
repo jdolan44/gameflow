@@ -1,9 +1,26 @@
 //import { io } from "socket.io-client";
 //issue: the console client needs the above line. The web client can't have it!
 export class Client {
-    //remove taking an io as input later
-    constructor(host) { //takes location of host server
+    handleTurn;
+    constructor(host/*, io*/) { //takes location of host server
         this.socket = io(host);
+        this.sessionID = null;
+        this.handleMyTurn = (data) => { };
+        this.currentTurnData = null;
+
+        //handles trigger for my turn
+        this.socket.on("state_update", (data) => {
+            if (data.whoseMove === this.socket.id) {
+                this.currentTurnData = data;
+                this.handleMyTurn(data);
+            }
+        });
+
+        this.socket.on("action_result", ({ success, error }) => {
+            if (success === false) {
+                this.handleMyTurn(this.currentTurnData);
+            }
+        })
     }
     /**
      * Requests to join a game. 
@@ -18,26 +35,29 @@ export class Client {
     }
 
     onJoin(handleJoin) {
-        this.socket.on("join_status", handleJoin);
+        this.socket.on("join_status", (data) => {
+            if (data.status === "begin") {
+                this.sessionID = data.sessionID;
+            }
+            handleJoin(data);
+        });
     }
 
     onMyTurn(handleMyTurn) {
-        this.socket.on("request_move", handleMyTurn);
+        this.handleMyTurn = handleMyTurn;
     }
 
     takeTurn(move) {
-        this.socket.emit("take_turn", move);
-    }
-
-
-    //when an invalid turn is recieved. 
-    //TO BE IMPLEMENTED!!
-    onInvalidTurn() {
-
+        this.socket.emit("game_message", { type: "take_turn", payload: { move }, sessionID: this.sessionID });
     }
 
     onGameOver(handleGameOver) {
         this.socket.on("game_over", handleGameOver);
+    }
+
+    //TODO: modify this so client doesn't have to know if it's the winner
+    isWinner(gameOverData) {
+        return gameOverData.winner === this.socket.id;
     }
 
     //for when a game disconnects/abruptly ends.

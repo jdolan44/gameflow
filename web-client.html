@@ -3,14 +3,43 @@
 
 <head>
     <title>Simple Game prototype!</title>
+    <style>
+        div {
+            padding: 10px;
+        }
+
+        #join {
+            margin-right: 20px;
+        }
+
+        #submit {
+            margin-left: 20px;
+        }
+    </style>
 </head>
 
 <body>
     <div>
-        <button id="join">Join Game</button> <span id="join_status"></span>
+        <h2>Simple Game</h2>
+        This game is really simple. <br />
+        Rules:
+        <ul>
+            <li>If you want to win, type "I want to win".</li>
+            <li>If you don't (for some reason), type "pass".</li>
+            <li>players alternate turns until somebody wants to win.</li>
+        </ul>
     </div>
-    <input type="text" id="turn_input" />
-    <button id="submit" disabled>Submit</button>
+    <div>
+        <button id="join">Join Game</button>
+        <span id="join_status"></span>
+    </div>
+    <div>
+        <input type="text" id="turn_input" />
+        <button id="submit" disabled>Submit</button>
+    </div>
+    <div id="game_status">
+
+    </div>
 
     <script src="http://localhost:3000/socket.io/socket.io.js"></script>
     <script type="module">
@@ -19,20 +48,23 @@
         const submitButton = document.getElementById("submit");
         const joinButton = document.getElementById("join");
         const joinStatus = document.getElementById("join_status");
+        const gameStatus = document.getElementById("game_status");
 
         //request to join game when the join button is clicked
         joinButton.addEventListener("click", () => {
             client.joinGame("simple");
             joinButton.setAttribute("disabled", "true");
+            changeGameStatus("");
         });
 
         //enables submit button when it is the user's turn.
         client.onMyTurn((status, gameState) => {
+            changeGameStatus("it's your turn.");
             submitButton.removeAttribute("disabled");
         });
 
         //notify client of join status
-        client.onJoin((status) => {
+        client.onJoin(({ status }) => {
             if (status == "queued") {
                 joinStatus.innerHTML = "in queue...";
             }
@@ -45,15 +77,25 @@
         submitButton.addEventListener("click", () => {
             let move = document.getElementById("turn_input").value;
             client.takeTurn(move);
+            changeGameStatus("waiting for other player...");
             submitButton.setAttribute("disabled", "true");
             document.getElementById("turn_input").value = "";
         });
 
         // when game is over, announce winner and allow the user to join a new game
-        client.onGameOver((status) => {
-            window.alert("game over! player " + status + " wins!");
+        client.onGameOver((data) => {
+            if (client.isWinner(data)) {
+                changeGameStatus("You win!");
+            }
+            else {
+                changeGameStatus("You lose!")
+            }
             joinButton.removeAttribute("disabled");
         });
+
+        function changeGameStatus(message) {
+            gameStatus.innerHTML = message;
+        }
 
     </script>
 </body>

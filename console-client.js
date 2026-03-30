@@ -19,22 +19,41 @@ if (choice === "ticTacToe") {
 function playSimpleGame() {
     client.joinGame("simple");
 
-    client.onMyTurn((status, gameState) => {
-        console.log(`it's player ${status}'s turn.`);
+    client.onJoin((data) => {
+        if (data.status === "begin") {
+            console.log("Game started!");
+        } else if (data.status === "queued") {
+            console.log("Waiting for another player...");
+        }
+    });
+
+    client.onMyTurn((data) => {
+        console.log(`It's your turn.`);
         // ignoring gameState for simple game
-        let move = prompt("what is your move? ");
-        if (move === undefined) { console.log("error i was xpecting!") }
+        let move = prompt("What is your move? ");
         client.takeTurn(move);
     });
 
-    client.onGameOver((status) => {
-        console.log(`player ${status} wins!`);
+    client.onGameOver((data) => {
+        if (client.isWinner(data)) {
+            console.log("You win!");
+        } else {
+            console.log("You lose!");
+        }
         client.disconnect();
     });
 }
 
 function playTicTacToe() {
     client.joinGame("ticTacToe");
+
+    client.onJoin((data) => {
+        if (data.status === "begin") {
+            console.log("Game started!");
+        } else if (data.status === "queued") {
+            console.log("Waiting for another player...");
+        }
+    });
 
     const renderBoard = (b) => {
         console.log("board:");
@@ -43,24 +62,23 @@ function playTicTacToe() {
         }
     };
 
-    client.onMyTurn((status, gameState) => {
-        console.log(`it's player ${status}'s turn.`);
-        if (gameState && gameState.board) renderBoard(gameState.board);
-        const raw = prompt("enter coordinates as x,y (0-2): ");
+    client.onMyTurn((data) => {
+        console.log(`It's your turn.`);
+        if (data.state && data.state.board) renderBoard(data.state.board);
+        const raw = prompt("Enter coordinates as x,y (0-2): ");
         const [xStr, yStr] = raw.split(",");
         const move = { x: parseInt(xStr, 10), y: parseInt(yStr, 10) };
         client.takeTurn(move);
     });
 
-    client.onGameOver((status, gameState) => {
-        console.log(`game over!`);
-        if (gameState.winner == "draw") {
-            console.log("it's a draw!");
+    client.onGameOver((data) => {
+        console.log(`Game over!`);
+        if (data.state && data.state.board) renderBoard(data.state.board);
+        if (client.isWinner(data)) {
+            console.log("You win!");
+        } else {
+            console.log("You lose!");
         }
-        else {
-            console.log(`${gameState.winner} wins!`);
-        }
-        if (gameState && gameState.board) renderBoard(gameState.board);
         client.disconnect();
     });
 }
