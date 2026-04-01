@@ -1,11 +1,11 @@
-//import { io } from "socket.io-client";
+import { io } from "socket.io-client";
 //issue: the console client needs the above line. The web client can't have it!
 export class Client {
     handleTurn;
     constructor(host/*, io*/) { //takes location of host server
         this.socket = io(host);
         this.sessionID = null;
-        this.handleMyTurn = (data) => { };
+        this.handleMyTurn = () => { };
         this.currentTurnData = null;
 
         //handles trigger for my turn
@@ -16,7 +16,7 @@ export class Client {
             }
         });
 
-        this.socket.on("action_result", ({ success, error }) => {
+        this.socket.on("action_result", ({ success }) => {
             if (success === false) {
                 this.handleMyTurn(this.currentTurnData);
             }

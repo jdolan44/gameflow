@@ -1,9 +1,9 @@
+/* eslint-disable no-undef */
 import promptSync from 'prompt-sync';
 import { Client } from './gameflow-client.js';
-import { io } from "socket.io-client";
 const prompt = promptSync();
 
-const client = new Client("http://localhost:3000", io);
+const client = new Client("http://localhost:3000");
 
 // choose which game to play
 let choice = process.argv[2];
@@ -27,7 +27,7 @@ function playSimpleGame() {
         }
     });
 
-    client.onMyTurn((data) => {
+    client.onMyTurn(() => {
         console.log(`It's your turn.`);
         // ignoring gameState for simple game
         let move = prompt("What is your move? ");

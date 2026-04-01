@@ -52,9 +52,8 @@ export class Session {
     handleTurn(socket, move) {
         console.log(move);
         //verify it is this player's turn.
-        if (socket != this.players[this.game.whoseMove - 1]) {
+        if (socket.id != this.players[this.game.whoseMove - 1].id) {
             //TODO: make action results its own function
-            //console.log(this.players[this.game.whoseMove]);
             this.sendActionResult(socket, false, "not your turn!");
             return;
         }

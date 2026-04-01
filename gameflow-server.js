@@ -16,6 +16,9 @@ const io = new Server(server, {
     cors: {
         origin: "*",
         methods: ["GET", "POST"]
+    },
+    connectionStateRecovery: {
+        maxDisconnectionDuration: 2 * 60 * 1000,
     }
 });
 console.log("START");
@@ -26,6 +29,7 @@ console.log("START");
 const waitingPlayers = {};
 
 //dict of all game sessions
+/** @type {{string: Session}} */
 const sessions = {};
 
 // registry so we can create new game instances by name
@@ -73,10 +77,10 @@ io.on("connection", (socket) => {
             if (ws === socket) {
                 delete waitingPlayers[type];
                 console.log(`LEFT QUEUE: ${socket.id}`);
-                break;
+                return;
             }
         }
-        //middle of a game!
+        console.log(`DISCONNECT: ${socket.id}`);
     });
 });
 
