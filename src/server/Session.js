@@ -20,18 +20,22 @@ export class Session {
         console.log(`GAME START: ${this.sessionID}`);
 
         // Emit to everyone in the room
-        this.io.to(this.sessionID).emit("join_status", { status: "begin", sessionID: this.sessionID });
+        this.sendToRoom("join_status", { status: "begin", sessionID: this.sessionID });
 
         //send initial state update
-        this.io.to(this.sessionID).emit("state_update", { state: this.game.gameState, whoseMove: this.players[this.game.whoseMove - 1].id });
+        this.sendToRoom("state_update", { state: this.game.gameState, whoseMove: this.getCurrentPlayer() });
     }
 
     getSessionId() {
         return this.sessionID;
     }
 
+    getCurrentPlayer() {
+        return this.players[this.game.whoseMove - 1].id
+    }
+
     handleGameOver() {
-        this.io.to(this.sessionID).emit("game_over", { winner: this.players[this.game.whoseMove - 1].id, state: this.game.gameState });
+        this.sendToRoom("game_over", { winner: this.getCurrentPlayer(), state: this.game.gameState });
         console.log(`GAME END: ${this.sessionID}`);
         this.onGameEnd(this.sessionID);
     }
@@ -57,7 +61,7 @@ export class Session {
     handleTurn(socket, move) {
         console.log(move);
         //verify it is this player's turn.
-        if (socket.id != this.players[this.game.whoseMove - 1].id) {
+        if (socket.id != this.getCurrentPlayer()) {
             this.sendActionResult(socket, false, "not your turn!");
             return;
         }
@@ -82,13 +86,12 @@ export class Session {
         //move to next player
         this.game.nextPlayer();
         //emit the state update to everyone
-        //TODO: make a state update function
-        this.io.to(this.sessionID).emit("state_update", { state: this.game.gameState, whoseMove: this.players[this.game.whoseMove - 1].id });
+        this.sendToRoom("state_update", { state: this.game.gameState, whoseMove: this.getCurrentPlayer() });
 
     }
 
     handleQuit(socket) {
-        this.io.to(this.sessionID).emit("game_end_quit", { quitter: socket.id, state: this.game.gameState });
+        this.sendToRoom("game_end_quit", { quitter: socket.id, state: this.game.gameState });
         console.log(`GAME END: ${this.sessionID}`);
         this.sendActionResult(socket, true);
         this.onGameEnd(this.sessionID);
@@ -98,6 +101,10 @@ export class Session {
         if (!success) console.log(socket.id + " error: " + error);
         else console.log(socket.id + " turn success!");
         socket.emit("action_result", { success, error });
+    }
+
+    sendToRoom(type, payload) {
+        this.io.to(this.sessionID).emit(type, payload);
     }
 
 }
