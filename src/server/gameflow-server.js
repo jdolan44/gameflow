@@ -58,8 +58,10 @@ io.on("connection", (socket) => {
 
             const game = createGame(gameType);
             const players = [opponent, socket];
-            const session = new Session(players, game, io);
-            sessions[session.getId()] = session;
+            const session = new Session(players, game, io, (sessionID) => {
+                delete sessions[sessionID];
+            });
+            sessions[session.getSessionId()] = session;
         } else {
             waitingPlayers[gameType] = socket;
             socket.emit("join_status", { status: "queued" }); //notify client they have been queued
@@ -86,6 +88,10 @@ io.on("connection", (socket) => {
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(process.cwd(), 'src/clients/web-client.html'));
+});
+
+app.get('/web-client.js', (req, res) => {
+    res.sendFile(path.join(process.cwd(), 'src/clients/web-client.js'));
 });
 
 app.get('/gameflow_client.js', (req, res) => {
