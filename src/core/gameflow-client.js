@@ -1,7 +1,11 @@
 import { io } from "http://localhost:3000/socket.io/socket.io.esm.min.js";
 
 export class Client {
-    constructor(host/*, io*/) { //takes location of host server
+    /**
+     * Creates a new Gameflow Client.
+     * @param {String} host location of the host server.
+     */
+    constructor(host) {
         this.defaultHandler = () => { };
         this.socket = io(host);
         this.sessionID = null;
@@ -24,7 +28,7 @@ export class Client {
                     }
                     break;
                 case "action_result":
-                    //TODO: possible flaw: action results can be for other things (not your move)
+                    //TODO: handle all action result cases, not just invalid turn
                     if (data.success === false) {
                         this.callHandler('invalidTurn', data.error);
                         this.callHandler('myTurn', this.currentTurnData);
@@ -43,22 +47,29 @@ export class Client {
                     if (this.handlers[event] && this.handlers[event] !== this.defaultHandler) {
                         this.handlers[event](data);
                     } else {
-                        console.warn(`Event ${event} not handled`);
+                        console.warn(`Event ${event} was recieved but not handled.`);
                     }
             }
         });
     }
 
+    /**
+     * Calls the specified handler. Internal use only.
+     * @param {String} key name of the event handler.
+     * @param {Object} data payload of the event handler.
+     */
     callHandler(key, data) {
         if (!this.handlers[key]) {
-            console.warn(`${key} handler does not exist`);
+            console.warn(`${key} handler does not exist.`);
         }
         else if (this.handlers[key] === this.defaultHandler) {
-            console.warn(`${key} handler not implemented`);
+            console.warn(`${key} handler not implemented.`);
         } else {
             this.handlers[key](data);
         }
     }
+
+    //EVENT EMITTERS
 
     /**
      * Requests to join a game. 
@@ -75,9 +86,16 @@ export class Client {
         this.socket.emit("game_message", { type: "quit_game", payload: {}, sessionID: this.sessionID });
     }
 
+
+    takeTurn(move) {
+        this.socket.emit("game_message", { type: "take_turn", payload: { move }, sessionID: this.sessionID });
+    }
+
     disconnect() {
         this.socket.disconnect();
     }
+
+    //EVENT HANDLERS
 
     onJoin(handleJoin) {
         this.handlers.join = handleJoin;
@@ -91,20 +109,16 @@ export class Client {
         this.handlers.invalidTurn = handleInvalidTurn;
     }
 
-    takeTurn(move) {
-        this.socket.emit("game_message", { type: "take_turn", payload: { move }, sessionID: this.sessionID });
-    }
-
     onWinner(handleWinner) {
         this.handlers.winner = handleWinner;
+    }
+
+    onQuit(handleQuit) {
+        this.handlers.quit = handleQuit;
     }
 
     //TODO: modify this so client doesn't have to know if it's the winner
     isWinner(gameOverData) {
         return gameOverData.winner === this.socket.id;
-    }
-
-    onQuit(handleQuit) {
-        this.handlers.quit = handleQuit;
     }
 }
