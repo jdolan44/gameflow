@@ -17,8 +17,8 @@ export class GameObject {
         if (this.isValidTurn == undefined) {
             throw new Error("isValidTurn(move, gameState) must be defined!");
         }
-        if (this.checkWinner == undefined) {
-            throw new Error("checkWinner(gameState) must be defined!");
+        if (this.checkGameOver == undefined) {
+            throw new Error("checkGameOver(gameState) must be defined!");
         }
         this.gameState = this.initialState();
         this.whoseMove = 1;

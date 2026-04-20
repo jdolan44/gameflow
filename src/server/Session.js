@@ -71,9 +71,10 @@ export class Session {
         //apply turn
         this.game.takeTurn(move, this.game.gameState);
 
-        //check for winner
-        if (this.game.checkWinner(this.game.gameState)) {
-            this.handleGameOver();
+        //check for game over
+        const outcome = this.game.checkGameOver(this.game.gameState);
+        if (outcome) {
+            this.handleGameOver(outcome);
             return;
         }
 
@@ -84,8 +85,17 @@ export class Session {
 
     }
 
-    handleGameOver() {
-        this.sendToRoom("game_end", { reason: "winner", winner: this.getCurrentPlayer(), state: this.game.gameState });
+    handleGameOver(outcome) {
+        const gameEndData = {
+            reason: outcome.type,
+            state: this.game.gameState
+        };
+
+        if (outcome.type === 'winner') {
+            gameEndData.winner = this.players[outcome.winner - 1].id;
+        }
+
+        this.sendToRoom("game_end", gameEndData);
         console.log(`GAME END: ${this.sessionID}`);
         this.onGameEnd(this.sessionID);
     }
