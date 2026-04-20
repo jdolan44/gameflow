@@ -1,15 +1,19 @@
 import { GameObject } from "../core/GameObject.js";
 
 export class SimpleGame extends GameObject {
-    initialState() { return {} }
+    initialState() { return { lastMove: "" } }
     /**@override */
     isValidTurn(move, gameState) {
-        return move == "i want to win" || move == "pass";
+        return move == "i want to win" || move == "pass" || move == "draw please";
     }
     takeTurn(move, gameState) {
-        if (move == "i want to win") { gameState.winner = true; }
+        gameState.lastMove = move;
     }
     checkGameOver(gameState) {
-        return gameState.winner ? { type: 'winner', winner: this.whoseMove } : null;
+        switch (gameState.lastMove) {
+            case "i want to win": return { type: 'winner', winner: this.whoseMove };
+            case "draw please": return { type: 'draw' };
+            default: return null;
+        }
     }
 }
