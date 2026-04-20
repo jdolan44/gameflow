@@ -56,10 +56,10 @@ client.onInvalidTurn((message) => {
 });
 
 //deal with each game over scenario.
-client.onGameOver((data) => {
-    switch (data.reason) {
-        case "winner": handleWinner(data); break;
-        case "quit": handleQuit(data.quitter); break;
+client.onGameOver((outcome) => {
+    switch (outcome.reason) {
+        case "winner": handleWinner(outcome); break;
+        case "quit": handleQuit(outcome.quitter); break;
         case "draw": handleDraw(); break;
     }
     joinButton.removeAttribute("disabled");
