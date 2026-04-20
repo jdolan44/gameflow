@@ -1,6 +1,9 @@
 export class Session {
+    /**@type {GameObject} */
     game; //GameObject instance
+    /**@type {Socket[]} */
     players; //array of each player's socket.
+    /**@type {string} */
     sessionID; //ID of the socket.io room created for this game.
     io; //Socket.IO server instance
 
@@ -52,7 +55,6 @@ export class Session {
 
     //handles a turn recieved from a player.
     //sends an "action_result" event.
-    //TODO: async?
     handleTurn(socket, move) {
         console.log(move);
         //verify it is this player's turn.
@@ -101,7 +103,6 @@ export class Session {
             player.emit("game_end", gameEndData);
         });
 
-        //this.sendToRoom("game_end", gameEndData);
         console.log(`GAME END: ${this.sessionID}`);
         this.onGameEnd(this.sessionID);
     }
