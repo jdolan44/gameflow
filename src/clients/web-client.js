@@ -55,8 +55,7 @@ client.onInvalidTurn((message) => {
     window.alert(message);
 });
 
-// when game is over, announce winner and allow the user to join a new game
-
+//deal with each game over scenario.
 client.onGameOver((data) => {
     switch (data.reason) {
         case "winner": handleWinner(data); break;
@@ -66,6 +65,8 @@ client.onGameOver((data) => {
     joinButton.removeAttribute("disabled");
     submitButton.setAttribute("disabled", "true");
 });
+
+//handlers for each game end type
 
 function handleWinner(data) {
     if (client.isWinner(data)) {
