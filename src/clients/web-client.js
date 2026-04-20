@@ -56,18 +56,30 @@ client.onInvalidTurn((message) => {
 });
 
 // when game is over, announce winner and allow the user to join a new game
-client.onWinner((data) => {
+
+client.onGameOver((data) => {
+    switch (data.reason) {
+        case "winner": handleWinner(data); break;
+        case "quit": handleQuit(data.quitter); break;
+        case "draw": handleDraw(); break;
+    }
+    joinButton.removeAttribute("disabled");
+    submitButton.setAttribute("disabled", "true");
+});
+
+function handleWinner(data) {
     if (client.isWinner(data)) {
         changeGameStatus("You win!");
     }
     else {
         changeGameStatus("You lose!")
     }
-    joinButton.removeAttribute("disabled");
-});
+};
 
-client.onQuit((data) => {
+function handleQuit(data) {
     changeGameStatus("game quit by: " + data.quitter);
-    joinButton.removeAttribute("disabled");
-    submitButton.setAttribute("disabled", "true");
-});
+};
+
+function handleDraw() {
+    changeGameStatus("it's a draw!");
+}

@@ -12,14 +12,11 @@ export class Client {
         this.handlers = {
             myTurn: this.defaultHandler,
             invalidTurn: this.defaultHandler,
-            winner: this.defaultHandler,
-            quit: this.defaultHandler,
             join: this.defaultHandler
         };
         this.currentTurnData = null;
 
         this.socket.onAny((event, data) => {
-            console.log(event);
             switch (event) {
                 case "state_update":
                     if (data.whoseMove === this.socket.id) {
@@ -33,9 +30,6 @@ export class Client {
                         this.callHandler('invalidTurn', data.error);
                         this.callHandler('myTurn', this.currentTurnData);
                     }
-                    break;
-                case "game_end":
-                    this.callHandler(data.reason, data);
                     break;
                 case "join_status":
                     if (data.status === "begin") {
@@ -109,12 +103,8 @@ export class Client {
         this.handlers.invalidTurn = handleInvalidTurn;
     }
 
-    onWinner(handleWinner) {
-        this.handlers.winner = handleWinner;
-    }
-
-    onQuit(handleQuit) {
-        this.handlers.quit = handleQuit;
+    onGameOver(handleGameOver) {
+        this.handlers.game_end = handleGameOver;
     }
 
     //TODO: modify this so client doesn't have to know if it's the winner
