@@ -1,5 +1,6 @@
 //outline of the client contract. not for actual game use.
 
+//required: import statement for the client.
 import { Client } from "../core/gameflow-client.js";
 
 //required: initialize the client
