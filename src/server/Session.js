@@ -46,7 +46,7 @@ export class Session {
                 this.handleTurn(socket, msg.payload.move);
                 break;
             case "quit_game":
-                this.handleQuit(socket);
+                this.handleGameOver({ type: "quit", quitter: socket });
                 break;
             default:
                 this.sendActionResult(socket, false, "message type not recognized!");
@@ -98,7 +98,13 @@ export class Session {
             gameEndData.winner = this.players[outcome.winner - 1].id;
         }
 
+        if (outcome.type === 'quit') {
+            gameEndData.quitter = outcome.quitter;
+            this.sendActionResult(outcome.quitter, true);
+        }
+
         this.players.forEach((player, index) => {
+            //TODO: what if it's not a win event? i think it's okay though.
             gameEndData.isWinner = (index == outcome.winner - 1);
             player.emit("game_end", gameEndData);
         });
@@ -107,6 +113,8 @@ export class Session {
         this.onGameEnd(this.sessionID);
     }
 
+    //TODO: move this to above
+    /**@deprecated */
     handleQuit(socket) {
         this.sendToRoom("game_end", { reason: "quit", quitter: socket.id, state: this.game.gameState });
         console.log(`GAME END: ${this.sessionID}`);
@@ -116,7 +124,7 @@ export class Session {
 
     sendActionResult(socket, success = true, error = "") {
         if (!success) console.log(socket.id + " error: " + error);
-        else console.log(socket.id + " turn success!");
+        else console.log(socket.id + " action success!");
         socket.emit("action_result", { success, error });
     }
 
