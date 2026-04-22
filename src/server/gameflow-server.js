@@ -5,7 +5,7 @@ import cors from "cors";
 import path from "path";
 import process from "process";
 import { createServer } from "http";
-import { createGameServer } from "./createGameServer.js";
+import { createGameServer } from "gameflow";
 import { Count21 } from "../games/Count21.js";
 
 const app = express();

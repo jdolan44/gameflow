@@ -1,4 +1,4 @@
-import { GameObject } from "../core/GameObject.js";
+import { GameObject } from "gameflow";
 
 export class Count21 extends GameObject {
     initialState() {

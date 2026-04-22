@@ -1,5 +1,8 @@
 {
   "name": "gameflow_prototype",
+  "workspaces": [
+    "packages/*"
+  ],
   "version": "1.0.0",
   "description": "This is a prototype for GameFlow, a framework for the development of two-player turn-based games.",
   "homepage": "https://github.com/jdolan44/gameflow_prototype#readme",
