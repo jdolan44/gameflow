@@ -8,5 +8,8 @@
   "main": "src/index.js",
   "scripts": {
     "build": "npx esbuild src/index.js --bundle --format=esm --outfile=dist/browser.js"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.8.3"
   }
 }
