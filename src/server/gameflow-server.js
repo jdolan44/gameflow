@@ -23,7 +23,7 @@ const gameRegistry = {
 //createGameServer({ port: 4000, gameRegistry, cors: { origin: "*" } }).start();
 createGameServer({ httpServer: server, gameRegistry });
 
-app.use(express.static(path.join(process.cwd(), "src/clients")));
+app.use(express.static(path.join(process.cwd(), "src/demos/plain_html")));
 
 //TODO: tech debt. shhhhhh
 app.get('/gameflow_client.js', (req, res) => {
