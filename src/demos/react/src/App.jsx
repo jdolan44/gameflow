@@ -1,9 +1,9 @@
-import SimpleGame from './SimpleGame';
 import './App.css'
+import TTT from './TTT';
 
 function App() {
   return (
-    <SimpleGame />
+    <TTT />
   )
 }
 
