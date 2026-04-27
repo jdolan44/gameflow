@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useState } from 'react'
 import { Client } from 'gameflow-client'
 import './App.css'
 
@@ -10,7 +10,7 @@ client.onJoin((data) => {
   console.log(data);
 });
 
-client.onMyTurn((gameState) => {
+client.onMyTurn(() => {
   let turn = window.prompt("what's your turn?");
   client.takeTurn(turn);
 });
