@@ -27,7 +27,7 @@ createGameServer({ httpServer: server, gameRegistry, cors: mycors });
 
 app.use(express.static(path.join(process.cwd(), "src/demos/plain_html")));
 
-//TODO: tech debt. shhhhhh
+//TODO: slight flaw of the browser version.
 app.get('/gameflow_client.js', (req, res) => {
     res.sendFile(path.join(process.cwd(), 'packages/client/dist/browser.js'));
 });

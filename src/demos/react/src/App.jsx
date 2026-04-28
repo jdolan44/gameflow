@@ -1,10 +1,24 @@
 import './App.css'
 import TTT from './TTT';
+import SimpleGame from './SimpleGame'
+import { useState } from 'react';
 
 function App() {
-  return (
-    <TTT />
-  )
+  const [choice, setChoice] = useState("");
+
+  switch (choice) {
+    case "ttt": return <TTT />
+    case "simple": return <SimpleGame />
+    default: return (
+      <div>
+        <h2>Select a game:</h2>
+        <div id="select">
+          <button onClick={() => setChoice("simple")}>Simple Game</button>
+          <button onClick={() => setChoice("ttt")}>Tic Tac Toe</button>
+        </div >
+      </div >
+    )
+  }
 }
 
 export default App
