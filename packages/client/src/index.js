@@ -10,7 +10,6 @@ export class Client {
      */
     constructor(host) {
         this.defaultHandler = () => { };
-        /**@type {Socket} */
         this.socket = io(host);
         this.sessionID = null;
         this.handlers = {
